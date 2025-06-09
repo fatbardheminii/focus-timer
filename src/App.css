@@ -6,10 +6,15 @@
   --button-bg-color: #4caf50;
   --button-hover-bg-color: #45a049;
   --button-text-color: #fff;
-  --font-size-large: 5rem;
-  --font-size-medium: 2rem;
-  --font-size-small: 1.2rem;
+  --font-size-xl: 5rem;
+  --font-size-lg: 2rem;
+  --font-size-regular: 1.5rem;
+  --font-size-sm: 1.2rem;
   --icon-size: 2rem;
+  --grey-color: #666;
+  --dark-grey-bg: #444;
+  --black-bg: #000;
+  --overlay-bg: rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -24,8 +29,127 @@ body {
   text-align: center;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  max-height: 100vh;
   background-color: var(--primary-bg-color);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--overlay-bg);
+  z-index: 10;
+}
+
+form {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 25%;
+  background-color: var(--secondary-bg-color);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  z-index: 20;
+}
+
+.form-title {
+  font-size: var(--font-size-lg);
+  color: var(--grey-color);
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--grey-color);
+  padding-bottom: 0.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.form-title .close-icon {
+  position: absolute;
+  right: 0;
+  cursor: pointer;
+}
+
+.form-title .fa-x {
+  font-size: var(--icon-size);
+  color: var(--grey-color);
+}
+
+.form-title .fa-x:hover {
+  color: var(--button-hover-bg-color);
+}
+
+.form-sub-title {
+  font-size: var(--font-size-regular);
+  color: var(--grey-color);
+  text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.form-sub-title .fa-clock {
+  font-size: var(--icon-size);
+}
+
+.duration-input-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.duration-input-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 20%;
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
+
+.duration-input-card label {
+  font-size: var(--font-size-sm);
+  color: var(--text-color);
+  margin-bottom: 0.3rem;
+}
+
+.duration-input-card input {
+  padding: 0.5rem;
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--grey-color);
+  border-radius: 4px;
+}
+
+.form-btn-container {
+  padding: 1rem;
+  border-radius: 4px;
+  display: flex;
+  justify-content: flex-end;
+  border-top: 2px solid var(--grey-color);
+}
+
+.form-btn-container button {
+  background-color: var(--black-bg);
+  color: var(--button-text-color);
+  padding: 0.5rem;
+  width: 100px;
+  border: none;
+  border-radius: 4px;
+  font-size: var(--font-size-sm);
+  cursor: pointer;
+}
+
+.form-btn-container button:hover {
+  background-color: #222;
 }
 
 header {
@@ -35,7 +159,7 @@ header {
   padding: 1rem;
   background-color: var(--secondary-bg-color);
   border-radius: 8px;
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-lg);
 }
 
 header .fa-clock {
@@ -58,7 +182,7 @@ header h1 {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: var(--font-size-small);
+  font-size: var(--font-size-sm);
 }
 
 .settings-btn:hover {
@@ -91,7 +215,7 @@ header h1 {
   color: var(--button-text-color);
   border: none;
   border-radius: 4px;
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-lg);
   cursor: pointer;
 }
 
@@ -103,7 +227,7 @@ header h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: var(--font-size-large);
+  font-size: var(--font-size-xl);
   color: var(--text-color);
   padding: 1rem;
   background-color: var(--secondary-bg-color);
@@ -122,7 +246,7 @@ header h1 {
   color: var(--button-text-color);
   border: none;
   border-radius: 4px;
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-lg);
   cursor: pointer;
 }
 
@@ -141,7 +265,7 @@ header h1 {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-lg);
   color: var(--text-color);
 }
 
@@ -153,11 +277,7 @@ footer {
   padding: 1rem;
   background-color: var(--secondary-bg-color);
   border-radius: 8px;
-  font-size: var(--font-size-medium);
-}
-
-footer > p {
-  margin-right: .5rem;
+  font-size: var(--font-size-lg);
 }
 
 footer .github-icon {
@@ -180,8 +300,16 @@ footer .github-icon:hover {
 
   .focus-mode button,
   .controls button {
-    font-size: var(--font-size-small);
+    font-size: var(--font-size-sm);
     padding: 0.4rem 0.8rem;
+  }
+
+  form {
+    width: 80%;
+  }
+
+  .duration-input-card {
+    width: 50%;
   }
 }
 

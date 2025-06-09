@@ -9,7 +9,9 @@ return (
         <FocusMode></FocusMode>
         <TimerDisplay></TimerDisplay>
         <Controls></Controls>
-        <FocusStatus></FocusStatus>
+        <div className="focus-status-container">
+            <FocusStatus></FocusStatus>
+        </div>
     </div>
 );
 };
