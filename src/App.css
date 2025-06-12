@@ -100,6 +100,48 @@ form {
   font-size: var(--icon-size);
 }
 
+.auto-start-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.auto-start-container input[type="checkbox"] {
+  appearance: none;
+  width: 50px;
+  height: 25px;
+  background-color: #ccc;
+  border-radius: 50px;
+  position: relative;
+  outline: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.auto-start-container input[type="checkbox"]::before {
+  content: "";
+  position: absolute;
+  width: 21px;
+  height: 21px;
+  background-color: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.auto-start-container input[type="checkbox"]:checked {
+  background-color: #4caf50;
+}
+
+.auto-start-container input[type="checkbox"]:checked::before {
+  transform: translateX(25px);
+}
+
+
 .duration-input-container {
   display: flex;
   flex-direction: row;
