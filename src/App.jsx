@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import MainSection from "./components/MainSection";
 import Setting from "./components/Setting";
 import { useState } from "react";
+import { TimerProvider } from "./context/TimerContext";
 
 function App() {
   const [isSettingOpen, setIsSettingOpen] = useState(false);
@@ -12,7 +13,7 @@ function App() {
   const closeSetting = () => setIsSettingOpen(false);
 
   return (
-    <>
+    <TimerProvider>
       <Header setIsSettingOpen={openSetting}></Header>
       <MainSection></MainSection>
       <Footer></Footer>
@@ -21,7 +22,7 @@ function App() {
           <Setting onClose={closeSetting} />
         </div>
       )}
-    </>
+    </TimerProvider>
   );
 }
 
