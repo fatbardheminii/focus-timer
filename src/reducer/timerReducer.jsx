@@ -6,7 +6,7 @@ const initialState = {
   longBreakLength: 15,
   currentMode: "focus",
   timerRunning: false,
-  focusCount: 0,
+  focusCount: 1,
   timeLeft: initialFocusLength * 60,
   autoStartFocus: false,
   autoStartBreak: false,
@@ -24,6 +24,12 @@ const timerReducer = (state, action) => {
       return {
         ...state,
         timerRunning: false,
+      };
+    }
+    case "SKIP": {
+      return {
+        ...state,
+        timeLeft: 0,
       };
     }
     case "RESET": {
@@ -111,14 +117,12 @@ const timerReducer = (state, action) => {
 
       let updatedTimeLeft = state.timeLeft;
 
-      if (!state.timerRunning) {
-        if (state.currentMode === "focus") {
-          updatedTimeLeft = focusLength * 60;
-        } else if (state.currentMode === "short") {
-          updatedTimeLeft = shortBreakLength * 60;
-        } else if (state.currentMode === "long") {
-          updatedTimeLeft = longBreakLength * 60;
-        }
+      if (state.currentMode === "focus") {
+        updatedTimeLeft = focusLength * 60;
+      } else if (state.currentMode === "short") {
+        updatedTimeLeft = shortBreakLength * 60;
+      } else if (state.currentMode === "long") {
+        updatedTimeLeft = longBreakLength * 60;
       }
 
       return {
