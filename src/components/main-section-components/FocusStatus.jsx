@@ -8,7 +8,7 @@ export default function FocusStatus() {
 
     return (
         <div className="focus-status">
-            <div className="focus-count">{focusCount}</div>
+            <div className="focus-count">#{focusCount}</div>
             <div className="focus-message">{message}</div>
         </div>
     );

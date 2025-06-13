@@ -4,10 +4,9 @@ import { TimerContext } from "../context/TimerContext";
 
 export default function Setting({ onClose }) {
   const { state, dispatch } = useContext(TimerContext);
-  const [autoStartBreaks, setAutoStartBreaks] = useState(state.autoStart);
-  const [autoStartFocus, setAutoStartFocus] = useState(state.autoStart);
+  const [autoStartBreaks, setAutoStartBreaks] = useState(state.autoStartBreak);
+  const [autoStartFocus, setAutoStartFocus] = useState(state.autoStartFocus);
 
-  // Make sure keys exactly match the reducer state keys!
   const [focus, setFocus] = useState(state.focusLength);
   const [shortBreak, setShortBreak] = useState(state.shortBreakLength);
   const [longBreak, setLongBreak] = useState(state.longBreakLength);
