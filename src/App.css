@@ -5,6 +5,12 @@
   --text-color: #333;
   --button-bg-color: #4caf50;
   --button-hover-bg-color: #45a049;
+  --pause-color: #ffc107;
+  --pause-hover-color: #e0a800;
+  --skip-color: #2196f3;
+  --skip-hover-color: #1976d2;
+  --reset-color: #9e9e9e;
+  --reset-hover-color: #7e7e7e;
   --button-text-color: #fff;
   --font-size-xl: 5rem;
   --font-size-lg: 2rem;
@@ -141,7 +147,6 @@ form {
   transform: translateX(25px);
 }
 
-
 .duration-input-container {
   display: flex;
   flex-direction: row;
@@ -276,25 +281,170 @@ header h1 {
   border-radius: 8px;
 }
 
+/* PROFESSIONAL CONTROLS SECTION */
+
 .controls {
   display: flex;
   justify-content: center;
   gap: 1rem;
 }
 
-.controls button {
-  padding: 0.5rem 1rem;
-  background-color: var(--button-bg-color);
-  color: var(--button-text-color);
-  border: none;
-  border-radius: 4px;
+.controls .main-btn {
+  font-weight: bold;
   font-size: var(--font-size-lg);
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 8px;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.controls button:hover {
+.controls .start {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+}
+
+.controls .start:hover {
   background-color: var(--button-hover-bg-color);
 }
+
+.controls .pause {
+  background-color: var(--pause-color);
+  color: var(--button-text-color);
+}
+
+.controls .pause:hover {
+  background-color: var(--pause-hover-color);
+}
+
+.controls .skip-btn {
+  background-color: var(--skip-color);
+  color: var(--button-text-color);
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.controls .skip-btn:hover {
+  background-color: var(--skip-hover-color);
+}
+
+.controls .reset-btn {
+  background-color: var(--reset-color);
+  color: var(--button-text-color);
+  padding: 0.5rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: var(--font-size-lg);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.controls .reset-btn:hover {
+  background-color: var(--reset-hover-color);
+}
+
+.controls button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+/* REUSABLE TOOLTIP STYLE */
+.icon-button {
+  position: relative;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 2rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-button .tooltip {
+  position: absolute;
+  bottom: 130%;
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.icon-button:hover .tooltip {
+  opacity: 1;
+}
+
+/* INDIVIDUAL ICON COLORS */
+
+.skip-btn {
+  background-color: #3498db;
+  color: white;
+}
+
+.skip-btn:hover {
+  background-color: #2c80b4;
+}
+
+.reset-btn {
+  background-color: #bdc3c7;
+  color: #333;
+}
+
+.reset-btn:hover {
+  background-color: #95a5a6;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.controls .main-btn {
+  font-weight: bold;
+  font-size: var(--font-size-lg);
+  padding: 0.8rem 1.8rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.controls .start {
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
+}
+
+.controls .start:hover {
+  background-color: var(--button-hover-bg-color);
+}
+
+.controls .pause {
+  background-color: var(--pause-color);
+  color: var(--button-text-color);
+}
+
+.controls .pause:hover {
+  background-color: var(--pause-hover-color);
+}
+
+.controls button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
 
 .focus-status-container {
   background-color: var(--focus-status-bg-color);
@@ -331,6 +481,8 @@ footer .github-icon:hover {
   color: var(--button-hover-bg-color);
 }
 
+/* RESPONSIVE */
+
 @media (max-width: 768px) {
   #root {
     max-width: 90%;
@@ -353,42 +505,4 @@ footer .github-icon:hover {
   .duration-input-card {
     width: 50%;
   }
-}
-
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
-}
-
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
-}
-
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
 }
