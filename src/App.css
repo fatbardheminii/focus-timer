@@ -26,16 +26,17 @@
 body {
   background-color: var(--primary-bg-color);
   font-size: 1.2rem;
+  box-sizing: border-box;
 }
 
 #root {
   max-width: 50%;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem;
   text-align: center;
   display: flex;
   flex-direction: column;
-  max-height: 100vh;
+  height: 100vh;
   background-color: var(--primary-bg-color);
 }
 
@@ -54,7 +55,7 @@ form {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 25%;
+  width: 45%;
   background-color: var(--secondary-bg-color);
   padding: 2rem;
   border-radius: 8px;
@@ -206,16 +207,17 @@ header {
   padding: 1rem;
   background-color: var(--secondary-bg-color);
   border-radius: 8px;
+  border-bottom: 2px solid var(--grey-color);
   font-size: var(--font-size-lg);
 }
 
-header .fa-clock {
+header > svg:first-of-type {
   font-size: var(--icon-size);
-  color: var(--text-color);
+  color: var(--button-bg-color);
 }
 
 header h1 {
-  font-size: 2.5rem;
+  font-size: var(--font-size-lg);
   color: var(--text-color);
 }
 
@@ -236,8 +238,13 @@ header h1 {
   background-color: var(--button-hover-bg-color);
 }
 
-.settings-btn .fa-gear {
+.settings-btn svg {
+  margin-right: .5rem;
   font-size: var(--icon-size);
+}
+
+.settings-btn-text {
+  display: block;
 }
 
 .main-section {
@@ -254,6 +261,7 @@ header h1 {
   display: flex;
   justify-content: center;
   gap: 1rem;
+  width: 100%;
 }
 
 .focus-mode button {
@@ -262,7 +270,7 @@ header h1 {
   color: var(--button-text-color);
   border: none;
   border-radius: 4px;
-  font-size: var(--font-size-lg);
+  font-size: var(--font-size-regular);
   cursor: pointer;
 }
 
@@ -469,7 +477,8 @@ footer {
   padding: 1rem;
   background-color: var(--secondary-bg-color);
   border-radius: 8px;
-  font-size: var(--font-size-lg);
+  border-top: 2px solid var(--grey-color);
+  font-size: var(--font-size-regular);
 }
 
 footer .github-icon {
@@ -484,25 +493,155 @@ footer .github-icon:hover {
 /* RESPONSIVE */
 
 @media (max-width: 768px) {
+  body {
+    font-size: 1rem;
+  }
+
   #root {
-    max-width: 90%;
+    min-width: 65%;
+    padding: 1rem;
+  }
+
+  /* Header adjustments */
+  header {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  header h1 {
+    font-size: 1.8rem;
+  }
+
+  header svg {
+    font-size: var(--icon-size);
+  }
+
+  /* Settings button - hide text, show only icon */
+  .settings-btn {
+    padding: 0.5rem;
+    min-width: auto;
+    gap: 0;
+  }
+
+  .settings-btn .fa-gear {
+    font-size: 1.5rem;
+  }
+
+  /* Footer adjustments */
+  footer {
+    font-size: 1rem;
+    padding: 0.8rem;
+  }
+
+  footer .github-icon {
+    font-size: 1.5rem;
   }
 
   .timer-display {
     font-size: 3rem;
   }
 
-  .focus-mode button,
+  .focus-mode {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .focus-mode button {
+    width: 60%;
+    font-size: var(--font-size-sm);
+    padding: 0.4rem 0.8rem;
+  }
+
   .controls button {
     font-size: var(--font-size-sm);
     padding: 0.4rem 0.8rem;
   }
 
+  /* Make pause button narrower */
+  .controls .pause {
+    padding: 0.4rem 1rem;
+  }
+
+  /* Form adjustments */
   form {
     width: 80%;
+    padding: 1.5rem;
+  }
+
+  /* Duration input container - vertical layout */
+  .duration-input-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
   }
 
   .duration-input-card {
-    width: 50%;
+    width: 80%;
+    margin: 0;
+    padding: 0.3rem;
+    flex-direction: row;
   }
+
+  .duration-input-card label {
+    font-size: 1rem;
+    margin-bottom: 0.2rem;
+  }
+
+  .duration-input-card input {
+    padding: 0.4rem;
+    font-size: 1rem;
+    width: 50px;
+  }
+
+  /* Auto-start container */
+  .auto-start-container {
+    font-size: 0.9rem;
+  }
+
+  .auto-start-container input[type="checkbox"] {
+    width: 40px;
+    height: 20px;
+  }
+
+  .auto-start-container input[type="checkbox"]::before {
+    width: 16px;
+    height: 16px;
+  }
+
+  .auto-start-container input[type="checkbox"]:checked::before {
+    transform: translateX(20px);
+  }
+
+  /* Focus status adjustments */
+  .focus-status {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 550px) {
+  #root {
+    min-width: 90%;
+    padding: 0 1rem;
+  }
+
+  header h1 {
+    font-size: var(--font-size-regular);
+  }
+  
+  .setting {
+    display: none;
+  }
+
+  .focus-mode button {
+    width: 80%;
+  }
+
+  .controls .main-btn, 
+  .controls .skip-btn, 
+  .controls .reset-btn {
+    font-size: var(--font-size-regular);
+  } 
+  
+  .settings-btn svg {
+  margin-right: 0;}
 }
