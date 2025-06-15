@@ -10,7 +10,7 @@ export default function Controls() {
   const { state, dispatch } = useContext(TimerContext);
   const intervalRef = useRef();
   const timeoutRefs = useRef([]);
-  const sessionEndRef = useRef(0); // Unique timestamp for session end
+  const sessionEndRef = useRef(0);
   const soundMap = {
     notification: notificationSound,
     birds: birdsSound,
@@ -21,7 +21,6 @@ export default function Controls() {
     soundEnabled: !!state.soundFile,
   });
 
-  // Timer ticking
   useEffect(() => {
     if (state.timerRunning) {
       intervalRef.current = setInterval(() => {
@@ -33,7 +32,6 @@ export default function Controls() {
     return () => clearInterval(intervalRef.current);
   }, [state.timerRunning, dispatch]);
 
-  // Dispatch TIMEOVER and set session ID
   useEffect(() => {
     if (state.timeLeft === 0 && sessionEndRef.current === 0) {
       sessionEndRef.current = Date.now();
@@ -43,7 +41,6 @@ export default function Controls() {
     }
   }, [state.timeLeft, dispatch]);
 
-  // Play sound
   useEffect(() => {
     if (
       state.timeLeft === 0 &&
@@ -51,11 +48,11 @@ export default function Controls() {
       sessionEndRef.current !== 0
     ) {
       const soundDurations = {
-        notification: 3000, // 3 seconds
-        birds: 2000, // 2 seconds
-        bell: 4000, // 4 seconds
+        notification: 3000,
+        birds: 2000,
+        bell: 4000,
       };
-      const soundDelay = soundDurations[state.soundFile] || 3000; // Fallback to 3s
+      const soundDelay = soundDurations[state.soundFile] || 3000;
       timeoutRefs.current.forEach(clearTimeout);
       timeoutRefs.current = [];
       for (let i = 0; i < state.soundRepeat; i++) {
@@ -68,7 +65,6 @@ export default function Controls() {
     }
 
     return () => {
-      // Only clear timeouts on unmount or new session
       if (sessionEndRef.current === 0) {
         timeoutRefs.current.forEach(clearTimeout);
         timeoutRefs.current = [];
@@ -82,9 +78,13 @@ export default function Controls() {
 
   return (
     <div className="controls">
+      <div aria-live="polite" className="sr-only">
+        {state.timerRunning ? "Timer is running" : "Timer is paused"}
+      </div>
       <button
         className={`main-btn ${state.timerRunning ? "pause" : "start"}`}
         onClick={handleStartPause}
+        aria-label={state.timerRunning ? "Pause timer" : "Start timer"}
       >
         {state.timerRunning ? "Pause" : "Start"}
       </button>
@@ -94,17 +94,25 @@ export default function Controls() {
           <button
             className="icon-button skip-btn"
             onClick={() => dispatch({ type: "SKIP" })}
+            aria-label="Skip current session"
+            aria-describedby="skip-tooltip"
           >
             <FaStepForward />
-            <span className="tooltip">Skip Session</span>
+            <span id="skip-tooltip" className="sr-only">
+              Skip to next session
+            </span>
           </button>
 
           <button
             className="icon-button reset-btn"
             onClick={() => dispatch({ type: "RESET" })}
+            aria-label="Reset timer"
+            aria-describedby="reset-tooltip"
           >
             <FaRedo />
-            <span className="tooltip">Reset Timer</span>
+            <span id="reset-tooltip" className="sr-only">
+              Reset timer to initial state
+            </span>
           </button>
         </>
       )}

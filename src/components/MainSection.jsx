@@ -3,15 +3,15 @@ import Controls from "./main-section-components/Controls";
 import FocusMode from "./main-section-components/FocusMode";
 import FocusStatus from "./main-section-components/FocusStatus";
 
-export default function MainSection () {
-return (
-    <div className="main-section">
-        <FocusMode></FocusMode>
-        <TimerDisplay></TimerDisplay>
-        <Controls></Controls>
-        <div className="focus-status-container">
-            <FocusStatus></FocusStatus>
-        </div>
-    </div>
-);
-};
+export default function MainSection() {
+  return (
+    <main className="main-section" aria-labelledby="focus-timer-heading">
+      <FocusMode />
+      <TimerDisplay />
+      <Controls />
+      <div className="focus-status-container">
+        <FocusStatus />
+      </div>
+    </main>
+  );
+}

@@ -1,6 +1,6 @@
 import { FaClock, FaX } from "react-icons/fa6";
 import { MdVolumeUp } from "react-icons/md";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect, useRef } from "react";
 import { TimerContext } from "../context/TimerContext";
 
 export default function Setting({ onClose }) {
@@ -13,6 +13,9 @@ export default function Setting({ onClose }) {
   const [focus, setFocus] = useState(state.focusLength);
   const [shortBreak, setShortBreak] = useState(state.shortBreakLength);
   const [longBreak, setLongBreak] = useState(state.longBreakLength);
+  const [repeatError, setRepeatError] = useState("");
+  const formRef = useRef(null);
+  const firstFocusableRef = useRef(null);
 
   useEffect(() => {
     setFocus(state.focusLength);
@@ -34,9 +37,46 @@ export default function Setting({ onClose }) {
     state.soundRepeat,
   ]);
 
+  // Focus trapping
+  useEffect(() => {
+    const form = formRef.current;
+    const focusableElements = form.querySelectorAll(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+    );
+    const firstElement = focusableElements[0];
+    const lastElement = focusableElements[focusableElements.length - 1];
+
+    firstFocusableRef.current = firstElement;
+
+    const handleKeyDown = (e) => {
+      if (e.key === "Tab") {
+        if (e.shiftKey && document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        } else if (!e.shiftKey && document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    form.addEventListener("keydown", handleKeyDown);
+    firstElement.focus();
+
+    return () => form.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const validatedRepeat = Math.max(1, Math.min(3, Number(soundRepeat)));
+    if (Number(soundRepeat) !== validatedRepeat) {
+      setRepeatError("Sound repeat must be between 1 and 3.");
+      return;
+    }
+    setRepeatError("");
     dispatch({
       type: "UPDATE_SETTING",
       payload: {
@@ -50,33 +90,41 @@ export default function Setting({ onClose }) {
         soundRepeat: validatedRepeat,
       },
     });
-
     dispatch({
       type: "UPDATE_AUTOSTART_FOCUS",
       payload: autoStartFocus,
     });
-
     dispatch({
       type: "UPDATE_AUTOSTART_BREAKS",
       payload: autoStartBreaks,
     });
-
     dispatch({
       type: "UPDATE_SOUND_SETTINGS",
       payload: { soundFile, volume, soundRepeat: validatedRepeat },
     });
-
     onClose();
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2 className="form-title">
-        Setting
-        <span className="close-icon" onClick={onClose}>
+    <form
+      onSubmit={handleSubmit}
+      ref={formRef}
+      role="dialog"
+      aria-labelledby="setting-title"
+    >
+      <h2 className="form-title" id="setting-title">
+        Settings
+        <button
+          className="close-icon"
+          onClick={onClose}
+          aria-label="Close settings"
+        >
           <FaX />
-        </span>
+        </button>
       </h2>
+      <div aria-live="polite" className="sr-only">
+        {repeatError || "Settings updated successfully"}
+      </div>
       <h3 className="form-sub-title">
         <FaClock /> Timer (minutes)
       </h3>
@@ -89,7 +137,11 @@ export default function Setting({ onClose }) {
             value={focus}
             onChange={(e) => setFocus(Number(e.target.value))}
             min={1}
+            aria-describedby="focus-desc"
           />
+          <span id="focus-desc" className="sr-only">
+            Focus session duration in minutes
+          </span>
         </div>
         <div className="duration-input-card">
           <label htmlFor="short-break-duration">Short Break</label>
@@ -99,7 +151,11 @@ export default function Setting({ onClose }) {
             value={shortBreak}
             onChange={(e) => setShortBreak(Number(e.target.value))}
             min={1}
+            aria-describedby="short-break-desc"
           />
+          <span id="short-break-desc" className="sr-only">
+            Short break duration in minutes
+          </span>
         </div>
         <div className="duration-input-card">
           <label htmlFor="long-break-duration">Long Break</label>
@@ -109,8 +165,38 @@ export default function Setting({ onClose }) {
             value={longBreak}
             onChange={(e) => setLongBreak(Number(e.target.value))}
             min={1}
+            aria-describedby="long-break-desc"
           />
+          <span id="long-break-desc" className="sr-only">
+            Long break duration in minutes
+          </span>
         </div>
+      </div>
+      <div className="checkbox-container">
+        <label htmlFor="auto-start-focus">Auto Start Focus:</label>
+        <input
+          type="checkbox"
+          id="auto-start-focus"
+          checked={autoStartFocus}
+          onChange={(e) => setAutoStartFocus(e.target.checked)}
+          aria-describedby="auto-focus-desc"
+        />
+        <span id="auto-focus-desc" className="sr-only">
+          Automatically start focus sessions
+        </span>
+      </div>
+      <div className="checkbox-container">
+        <label htmlFor="auto-start-breaks">Auto Start Breaks:</label>
+        <input
+          type="checkbox"
+          id="auto-start-breaks"
+          checked={autoStartBreaks}
+          onChange={(e) => setAutoStartBreaks(e.target.checked)}
+          aria-describedby="auto-breaks-desc"
+        />
+        <span id="auto-breaks-desc" className="sr-only">
+          Automatically start break sessions
+        </span>
       </div>
       <h3 className="form-sub-title">
         <MdVolumeUp /> Sound
@@ -123,6 +209,9 @@ export default function Setting({ onClose }) {
             value={soundFile}
             onChange={(e) => setSoundFile(e.target.value)}
             disabled={state.timerRunning}
+            aria-describedby={
+              state.timerRunning ? "sound-disabled-desc" : undefined
+            }
           >
             <option value="">None</option>
             <option value="notification">Notification</option>
@@ -130,8 +219,8 @@ export default function Setting({ onClose }) {
             <option value="bell">Bell</option>
           </select>
           {state.timerRunning && (
-            <span className="tooltip">
-              Cannot change sound while timer is running
+            <span id="sound-disabled-desc" className="sr-only">
+              Sound selection is disabled while timer is running
             </span>
           )}
         </div>
@@ -146,8 +235,14 @@ export default function Setting({ onClose }) {
           min={0}
           max={100}
           step={1}
+          aria-valuenow={volume}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-describedby="volume-desc"
         />
-        <span>{volume}%</span>
+        <span id="volume-desc" className="sr-only">
+          Volume level: {volume}%
+        </span>
       </div>
       <div className="checkbox-container">
         <label htmlFor="sound-repeat">Sound Repeat (1-3):</label>
@@ -159,31 +254,21 @@ export default function Setting({ onClose }) {
           min={1}
           max={3}
           step={1}
+          aria-describedby="repeat-desc"
         />
-      </div>
-      <h3 className="form-sub-title">
-        <FaClock /> Focus Timer
-      </h3>
-      <div className="checkbox-container">
-        <label htmlFor="auto-start-focus">Auto Start Focus:</label>
-        <input
-          type="checkbox"
-          id="auto-start-focus"
-          checked={autoStartFocus}
-          onChange={(e) => setAutoStartFocus(e.target.checked)}
-        />
-      </div>
-      <div className="checkbox-container">
-        <label htmlFor="auto-start-breaks">Auto Start Breaks:</label>
-        <input
-          type="checkbox"
-          id="auto-start-breaks"
-          checked={autoStartBreaks}
-          onChange={(e) => setAutoStartBreaks(e.target.checked)}
-        />
+        <span id="repeat-desc" className="sr-only">
+          Number of times to repeat sound (1 to 3)
+        </span>
+        {repeatError && (
+          <span className="error" aria-live="assertive">
+            {repeatError}
+          </span>
+        )}
       </div>
       <div className="form-btn-container">
-        <button type="submit">OK</button>
+        <button type="submit" aria-label="Save settings">
+          OK
+        </button>
       </div>
     </form>
   );
