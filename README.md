@@ -74,6 +74,10 @@ Build and deploy to GitHub Pages:
 npm run deploy
 ```
 
+## Documentation
+
+For a detailed explanation of the project’s codebase, including file purposes, React concepts, and data flow, see the Project Documentation.
+
 ## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for bug fixes or new features.
