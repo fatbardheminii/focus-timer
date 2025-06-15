@@ -266,6 +266,7 @@ export default function Setting({ onClose }) {
           aria-valuemax={100}
           aria-describedby="volume-desc"
         />
+        <span>{volume}%</span>
         <span id="volume-desc" className="sr-only">
           Volume level: {volume}%
         </span>
