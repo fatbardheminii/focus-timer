@@ -104,11 +104,12 @@ form {
   gap: 0.5rem;
 }
 
-.form-sub-title .fa-clock {
+.form-sub-title .fa-clock,
+.form-sub-title .md-volume-up {
   font-size: var(--icon-size);
 }
 
-.auto-start-container {
+.checkbox-container {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -117,7 +118,7 @@ form {
   font-weight: 500;
 }
 
-.auto-start-container input[type="checkbox"] {
+.checkbox-container input[type="checkbox"] {
   appearance: none;
   width: 50px;
   height: 25px;
@@ -129,7 +130,7 @@ form {
   transition: background-color 0.3s;
 }
 
-.auto-start-container input[type="checkbox"]::before {
+.checkbox-container input[type="checkbox"]::before {
   content: "";
   position: absolute;
   width: 21px;
@@ -141,12 +142,64 @@ form {
   transition: transform 0.3s;
 }
 
-.auto-start-container input[type="checkbox"]:checked {
+.checkbox-container input[type="checkbox"]:checked {
   background-color: #4caf50;
 }
 
-.auto-start-container input[type="checkbox"]:checked::before {
+.checkbox-container input[type="checkbox"]:checked::before {
   transform: translateX(25px);
+}
+
+.checkbox-container input[type="range"] {
+  width: 100px;
+  cursor: pointer;
+}
+
+.checkbox-container select {
+  padding: 0.5rem;
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--grey-color);
+  border-radius: 4px;
+  background-color: white;
+  cursor: pointer;
+}
+
+.checkbox-container select:disabled {
+  background-color: #e0e0e0;
+  cursor: not-allowed;
+}
+
+.checkbox-container input[type="number"] {
+  width: 50px;
+  padding: 0.5rem;
+  font-size: var(--font-size-sm);
+  border: 1px solid var(--grey-color);
+  border-radius: 4px;
+}
+
+.select-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.select-wrapper .tooltip {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.select-wrapper:hover .tooltip {
+  opacity: 1;
 }
 
 .duration-input-container {
@@ -294,8 +347,6 @@ header h1 {
   border-radius: 8px;
 }
 
-/* PROFESSIONAL CONTROLS SECTION */
-
 .controls {
   display: flex;
   justify-content: center;
@@ -365,7 +416,6 @@ header h1 {
   cursor: not-allowed;
 }
 
-/* REUSABLE TOOLTIP STYLE */
 .icon-button {
   position: relative;
   background-color: transparent;
@@ -397,8 +447,6 @@ header h1 {
 .icon-button:hover .tooltip {
   opacity: 1;
 }
-
-/* INDIVIDUAL ICON COLORS */
 
 .skip-btn {
   background-color: #3498db;
@@ -458,7 +506,6 @@ header h1 {
   cursor: not-allowed;
 }
 
-
 .focus-status-container {
   background-color: var(--focus-status-bg-color);
   padding: 1rem;
@@ -472,6 +519,17 @@ header h1 {
   gap: 0.5rem;
   font-size: var(--font-size-lg);
   color: var(--text-color);
+  transition: transform 0.3s ease;
+}
+
+.focus-status.session-end {
+  animation: pulse 1s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 footer {
@@ -495,8 +553,6 @@ footer .github-icon:hover {
   color: var(--button-hover-bg-color);
 }
 
-/* RESPONSIVE */
-
 @media (max-width: 768px) {
   body {
     font-size: 1rem;
@@ -507,7 +563,6 @@ footer .github-icon:hover {
     padding: 1rem;
   }
 
-  /* Header adjustments */
   header {
     font-size: 1rem;
     padding: 0.8rem;
@@ -521,7 +576,6 @@ footer .github-icon:hover {
     font-size: var(--icon-size);
   }
 
-  /* Settings button - hide text, show only icon */
   .settings-btn {
     padding: 0.5rem;
     min-width: auto;
@@ -532,7 +586,6 @@ footer .github-icon:hover {
     font-size: 1.5rem;
   }
 
-  /* Footer adjustments */
   footer {
     font-size: 1rem;
     padding: 0.8rem;
@@ -562,18 +615,15 @@ footer .github-icon:hover {
     padding: 0.4rem 0.8rem;
   }
 
-  /* Make pause button narrower */
   .controls .pause {
     padding: 0.4rem 1rem;
   }
 
-  /* Form adjustments */
   form {
     width: 80%;
     padding: 1.5rem;
   }
 
-  /* Duration input container - vertical layout */
   .duration-input-container {
     flex-direction: column;
     align-items: flex-start;
@@ -598,26 +648,39 @@ footer .github-icon:hover {
     width: 50px;
   }
 
-  /* Auto-start container */
-  .auto-start-container {
+  .checkbox-container {
     font-size: 0.9rem;
   }
 
-  .auto-start-container input[type="checkbox"] {
+  .checkbox-container input[type="checkbox"] {
     width: 40px;
     height: 20px;
   }
 
-  .auto-start-container input[type="checkbox"]::before {
+  .checkbox-container input[type="checkbox"]::before {
     width: 16px;
     height: 16px;
   }
 
-  .auto-start-container input[type="checkbox"]:checked::before {
+  .checkbox-container input[type="checkbox"]:checked::before {
     transform: translateX(20px);
   }
 
-  /* Focus status adjustments */
+  .checkbox-container input[type="range"] {
+    width: 80px;
+  }
+
+  .checkbox-container input[type="number"] {
+    width: 40px;
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+
+  .checkbox-container select {
+    padding: 0.4rem;
+    font-size: 1rem;
+  }
+
   .focus-status {
     font-size: 1.2rem;
   }
@@ -648,5 +711,6 @@ footer .github-icon:hover {
   } 
   
   .settings-btn svg {
-  margin-right: 0;}
+    margin-right: 0;
+  }
 }

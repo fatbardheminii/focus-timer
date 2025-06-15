@@ -9,7 +9,10 @@ const initialState = {
   focusCount: 1,
   timeLeft: initialFocusLength * 60,
   autoStartFocus: false,
-  autoStartBreak: false,
+  autoStartBreaks: false,
+  soundFile: "notification", // Selected sound: "notification", "birds", "bell", or "" for disabled
+  volume: 50, 
+  soundRepeat: 1, 
 };
 
 const timerReducer = (state, action) => {
@@ -36,6 +39,9 @@ const timerReducer = (state, action) => {
       return {
         ...initialState,
         timeLeft: state.focusLength * 60,
+        soundFile: state.soundFile, 
+        volume: state.volume,
+        soundRepeat: state.soundRepeat,
       };
     }
     case "TICK": {
@@ -45,7 +51,7 @@ const timerReducer = (state, action) => {
       };
     }
     case "SET_MODE": {
-      const newMode = action.payload; // expected: "focus", "short", or "long"
+      const newMode = action.payload;
       let newTimeLeft = 0;
 
       if (newMode === "focus") {
@@ -106,13 +112,24 @@ const timerReducer = (state, action) => {
         autoStartFocus: action.payload,
       };
     }
+    case "UPDATE_SOUND_SETTINGS": {
+      return {
+        ...state,
+        soundFile: action.payload.soundFile,
+        volume: action.payload.volume,
+        soundRepeat: action.payload.soundRepeat,
+      };
+    }
     case "UPDATE_SETTING": {
       const {
         focusLength,
         shortBreakLength,
         longBreakLength,
-        autoStartBreak,
+        autoStartBreaks,
         autoStartFocus,
+        soundFile,
+        volume,
+        soundRepeat,
       } = action.payload;
 
       let updatedTimeLeft = state.timeLeft;
@@ -130,8 +147,11 @@ const timerReducer = (state, action) => {
         focusLength,
         shortBreakLength,
         longBreakLength,
-        autoStartBreak,
+        autoStartBreaks,
         autoStartFocus,
+        soundFile,
+        volume,
+        soundRepeat,
         timeLeft: updatedTimeLeft,
       };
     }
