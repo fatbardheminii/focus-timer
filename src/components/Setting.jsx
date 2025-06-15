@@ -7,7 +7,8 @@ export default function Setting({ onClose }) {
   const { state, dispatch } = useContext(TimerContext);
   const [autoStartBreaks, setAutoStartBreaks] = useState(state.autoStartBreaks);
   const [autoStartFocus, setAutoStartFocus] = useState(state.autoStartFocus);
-  const [soundFile, setSoundFile] = useState(state.soundFile);
+  const [soundEnabled, setSoundEnabled] = useState(state.soundEnabled);
+  const [soundFile, setSoundFile] = useState(state.soundFile || "notification");
   const [volume, setVolume] = useState(state.volume);
   const [soundRepeat, setSoundRepeat] = useState(state.soundRepeat);
   const [focus, setFocus] = useState(state.focusLength);
@@ -23,7 +24,8 @@ export default function Setting({ onClose }) {
     setLongBreak(state.longBreakLength);
     setAutoStartBreaks(state.autoStartBreaks);
     setAutoStartFocus(state.autoStartFocus);
-    setSoundFile(state.soundFile);
+    setSoundEnabled(state.soundEnabled);
+    setSoundFile(state.soundFile || "notification");
     setVolume(state.volume);
     setSoundRepeat(state.soundRepeat);
   }, [
@@ -32,6 +34,7 @@ export default function Setting({ onClose }) {
     state.longBreakLength,
     state.autoStartBreaks,
     state.autoStartFocus,
+    state.soundEnabled,
     state.soundFile,
     state.volume,
     state.soundRepeat,
@@ -85,7 +88,8 @@ export default function Setting({ onClose }) {
         longBreakLength: longBreak,
         autoStartBreaks,
         autoStartFocus,
-        soundFile,
+        soundEnabled,
+        soundFile: soundEnabled ? soundFile : "",
         volume,
         soundRepeat: validatedRepeat,
       },
@@ -100,7 +104,12 @@ export default function Setting({ onClose }) {
     });
     dispatch({
       type: "UPDATE_SOUND_SETTINGS",
-      payload: { soundFile, volume, soundRepeat: validatedRepeat },
+      payload: {
+        soundEnabled,
+        soundFile: soundEnabled ? soundFile : "",
+        volume,
+        soundRepeat: validatedRepeat,
+      },
     });
     onClose();
   };
@@ -202,25 +211,41 @@ export default function Setting({ onClose }) {
         <MdVolumeUp /> Sound
       </h3>
       <div className="checkbox-container">
-        <label htmlFor="sound-enabled">Alarm Sound:</label>
+        <label htmlFor="sound-enabled">Enable Sound Effects:</label>
+        <input
+          type="checkbox"
+          id="sound-enabled"
+          checked={soundEnabled}
+          onChange={(e) => setSoundEnabled(e.target.checked)}
+          aria-describedby="sound-enabled-desc"
+        />
+        <span id="sound-enabled-desc" className="sr-only">
+          Toggle sound effects on or off
+        </span>
+      </div>
+      <div className="checkbox-container">
+        <label htmlFor="sound-select">Alarm Sound:</label>
         <div className="select-wrapper">
           <select
-            id="sound-enabled"
+            id="sound-select"
             value={soundFile}
             onChange={(e) => setSoundFile(e.target.value)}
-            disabled={state.timerRunning}
+            disabled={!soundEnabled || state.timerRunning}
             aria-describedby={
-              state.timerRunning ? "sound-disabled-desc" : undefined
+              !soundEnabled || state.timerRunning
+                ? "sound-disabled-desc"
+                : undefined
             }
           >
-            <option value="">None</option>
             <option value="notification">Notification</option>
             <option value="birds">Birds</option>
             <option value="bell">Bell</option>
           </select>
-          {state.timerRunning && (
+          {(!soundEnabled || state.timerRunning) && (
             <span id="sound-disabled-desc" className="sr-only">
-              Sound selection is disabled while timer is running
+              {soundEnabled
+                ? "Sound selection is disabled while timer is running"
+                : "Sound selection is disabled because sound effects are turned off"}
             </span>
           )}
         </div>
@@ -235,6 +260,7 @@ export default function Setting({ onClose }) {
           min={0}
           max={100}
           step={1}
+          disabled={!soundEnabled}
           aria-valuenow={volume}
           aria-valuemin={0}
           aria-valuemax={100}
@@ -254,6 +280,7 @@ export default function Setting({ onClose }) {
           min={1}
           max={3}
           step={1}
+          disabled={!soundEnabled}
           aria-describedby="repeat-desc"
         />
         <span id="repeat-desc" className="sr-only">

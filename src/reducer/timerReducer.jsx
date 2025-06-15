@@ -10,9 +10,10 @@ const initialState = {
   timeLeft: initialFocusLength * 60,
   autoStartFocus: false,
   autoStartBreaks: false,
-  soundFile: "notification", // Selected sound: "notification", "birds", "bell", or "" for disabled
-  volume: 50, 
-  soundRepeat: 1, 
+  soundEnabled: true,
+  soundFile: "notification",
+  volume: 50,
+  soundRepeat: 1,
 };
 
 const timerReducer = (state, action) => {
@@ -39,7 +40,8 @@ const timerReducer = (state, action) => {
       return {
         ...initialState,
         timeLeft: state.focusLength * 60,
-        soundFile: state.soundFile, 
+        soundEnabled: state.soundEnabled,
+        soundFile: state.soundEnabled ? state.soundFile : "",
         volume: state.volume,
         soundRepeat: state.soundRepeat,
       };
@@ -115,6 +117,7 @@ const timerReducer = (state, action) => {
     case "UPDATE_SOUND_SETTINGS": {
       return {
         ...state,
+        soundEnabled: action.payload.soundEnabled,
         soundFile: action.payload.soundFile,
         volume: action.payload.volume,
         soundRepeat: action.payload.soundRepeat,
@@ -127,6 +130,7 @@ const timerReducer = (state, action) => {
         longBreakLength,
         autoStartBreaks,
         autoStartFocus,
+        soundEnabled,
         soundFile,
         volume,
         soundRepeat,
@@ -149,6 +153,7 @@ const timerReducer = (state, action) => {
         longBreakLength,
         autoStartBreaks,
         autoStartFocus,
+        soundEnabled,
         soundFile,
         volume,
         soundRepeat,

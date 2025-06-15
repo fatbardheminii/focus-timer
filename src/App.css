@@ -108,11 +108,6 @@ form {
   align-items: center;
   position: relative;
 }
-/* 
-.form-title .close-icon-container {
-  position: absolute;
-  right: 0;
-} */
 
 .form-title .close-icon {
   background: none;
@@ -490,7 +485,10 @@ footer .github-icon:hover {
 }
 
 button:focus,
-button:focus-visible,
+button:focus-visible {
+  outline: none;
+}
+
 input:focus,
 input:focus-visible,
 select:focus,

@@ -18,7 +18,7 @@ export default function Controls() {
   };
   const [play] = useSound(soundMap[state.soundFile] || notificationSound, {
     volume: state.volume / 100,
-    soundEnabled: !!state.soundFile,
+    soundEnabled: state.soundEnabled && !!state.soundFile,
   });
 
   useEffect(() => {
@@ -44,6 +44,7 @@ export default function Controls() {
   useEffect(() => {
     if (
       state.timeLeft === 0 &&
+      state.soundEnabled &&
       state.soundFile &&
       sessionEndRef.current !== 0
     ) {
@@ -70,7 +71,13 @@ export default function Controls() {
         timeoutRefs.current = [];
       }
     };
-  }, [state.timeLeft, state.soundFile, state.soundRepeat, play]);
+  }, [
+    state.timeLeft,
+    state.soundEnabled,
+    state.soundFile,
+    state.soundRepeat,
+    play,
+  ]);
 
   const handleStartPause = () => {
     dispatch({ type: state.timerRunning ? "PAUSE" : "START" });
