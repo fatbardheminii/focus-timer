@@ -11,6 +11,8 @@ export default function Controls() {
   const intervalRef = useRef();
   const timeoutRefs = useRef([]);
   const sessionEndRef = useRef(0);
+  const startTimeRef = useRef(null); // Store the start time of the timer
+  const initialDurationRef = useRef(null); // Store the initial session duration
   const soundMap = {
     notification: notificationSound,
     birds: birdsSound,
@@ -21,14 +23,46 @@ export default function Controls() {
     soundEnabled: state.soundEnabled && !!state.soundFile,
   });
 
+  // Helper function to reset startTimeRef and initialDurationRef
+  const resetStartTime = () => {
+    startTimeRef.current = null;
+    initialDurationRef.current = null;
+  };
+
   useEffect(() => {
     if (state.timerRunning) {
+      // Record the start time if not already set
+      if (!startTimeRef.current) {
+        startTimeRef.current = Date.now();
+      }
+
       intervalRef.current = setInterval(() => {
+        // Calculate elapsed time since the timer started
+        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+
+        // Update timeLeft for display
         dispatch({ type: "TICK" });
+
+        // Check if the session should end based on elapsed time
+        if (
+          initialDurationRef.current &&
+          elapsed >= initialDurationRef.current
+        ) {
+          dispatch({ type: "TIMEOVER" });
+          clearInterval(intervalRef.current);
+          resetStartTime();
+        }
       }, 1000);
     } else {
       clearInterval(intervalRef.current);
+      // Update startTimeRef and initialDurationRef to account for paused time
+      if (startTimeRef.current && initialDurationRef.current) {
+        const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+        startTimeRef.current = Date.now();
+        initialDurationRef.current = initialDurationRef.current - elapsed; // Adjust remaining duration
+      }
     }
+
     return () => clearInterval(intervalRef.current);
   }, [state.timerRunning, dispatch]);
 
@@ -36,6 +70,7 @@ export default function Controls() {
     if (state.timeLeft === 0 && sessionEndRef.current === 0) {
       sessionEndRef.current = Date.now();
       dispatch({ type: "TIMEOVER" });
+      resetStartTime();
     } else if (state.timeLeft !== 0) {
       sessionEndRef.current = 0;
     }
@@ -80,7 +115,10 @@ export default function Controls() {
   ]);
 
   const handleStartPause = () => {
-    dispatch({ type: state.timerRunning ? "PAUSE" : "START" });
+    dispatch({
+      type: state.timerRunning ? "PAUSE" : "START",
+      payload: state.timerRunning ? undefined : state.timeLeft,
+    });
   };
 
   return (
@@ -100,7 +138,10 @@ export default function Controls() {
         <>
           <button
             className="icon-button skip-btn"
-            onClick={() => dispatch({ type: "SKIP" })}
+            onClick={() => {
+              dispatch({ type: "SKIP" });
+              resetStartTime();
+            }}
             aria-label="Skip current session"
             aria-describedby="skip-tooltip"
           >
@@ -112,7 +153,10 @@ export default function Controls() {
 
           <button
             className="icon-button reset-btn"
-            onClick={() => dispatch({ type: "RESET" })}
+            onClick={() => {
+              dispatch({ type: "RESET" });
+              resetStartTime();
+            }}
             aria-label="Reset timer"
             aria-describedby="reset-tooltip"
           >
