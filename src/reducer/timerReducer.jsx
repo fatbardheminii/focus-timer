@@ -22,6 +22,7 @@ const timerReducer = (state, action) => {
       return {
         ...state,
         timerRunning: true,
+        timeLeft: action.payload || state.timeLeft, // Use payload if provided
       };
     }
     case "PAUSE": {
